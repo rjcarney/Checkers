@@ -5,20 +5,24 @@ public class Board {
 	int redCount;
 	int blackCount;
 
+	public int getRedCount() { return this.redCount; }
+	public int getBlackCount() { return this.blackCount; }
+	
 	// Construct Game Board
 	public Board() {
 		this.board = new Square[8][8];
 		this.redCount = 0;
 		this.blackCount = 0;
+		int position = 1;
 		//Place 
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				// Red Squares
 				// Player Can Not Use, All Are Worth 0 Points
 				if(i%2 == 0 && j%2 == 0)
-						board[i][j] = new Square("red", i, j, 0);
+						board[i][j] = new Square("red", i, j, 0, 0);
 				else if (i%2 == 1 && j%2 == 1) 
-					board[i][j] = new Square("red", i, j, 0);
+					board[i][j] = new Square("red", i, j, 0, 0);
 				
 				// Black Squares
 				// Player Can Use These Spaces
@@ -26,26 +30,28 @@ public class Board {
 				else {
 					// Back Rows (5 points)
 					if(i == 0 || i == 7)
-						board[i][j] = new Square("black", i, j, 5);
+						board[i][j] = new Square("black", i, j, 5, position);
 					// Outside Wall (1 point)
 					else if((j == 0 && i>0 && i<7) ||
 							(j == 7 && i>0 && i<7))
-						board[i][j] = new Square("black", i, j, 1);
+						board[i][j] = new Square("black", i, j, 1, position);
 					// Second Squares (2 points)
 					else if((i == 1 && j>0 && j<7) ||
 							(i == 6 && j>0 && j<7) ||
 							(j == 1 && i>0 && i<7) ||
 							(j == 6 && i>0 && i<7))
-						board[i][j] = new Square("black", i, j, 2);
+						board[i][j] = new Square("black", i, j, 2, position);
 					// Third Squares (3 points)
 					else if((i == 2 && j>1 && j<6) ||
 							(i == 5 && j>1 && j<6) ||
 							(j == 2 && i>1 && i<6) ||
 							(j == 5 && i>1 && i<6))
-						board[i][j] = new Square("black", i, j, 3);
+						board[i][j] = new Square("black", i, j, 3, position);
 					// Center (4 points)
 					else
-						board[i][j] = new Square("black", i, j, 4);
+						board[i][j] = new Square("black", i, j, 4, position);
+					
+					position++;
 					
 					//Place Checkers On The Correct Squares
 					if(i < 3) {
@@ -62,6 +68,74 @@ public class Board {
 		}
 	}
 
+	// Construct Game Board
+		public Board(int[] rPos, int[] bPos) {
+			this.board = new Square[8][8];
+			this.redCount = 0;
+			this.blackCount = 0;
+			int position = 1;
+			//Place 
+			for(int i = 0; i < 8; i++) {
+				for(int j = 0; j < 8; j++) {
+					// Red Squares
+					// Player Can Not Use, All Are Worth 0 Points
+					if(i%2 == 0 && j%2 == 0)
+							board[i][j] = new Square("red", i, j, 0, 0);
+					else if (i%2 == 1 && j%2 == 1) 
+						board[i][j] = new Square("red", i, j, 0, 0);
+					
+					// Black Squares
+					// Player Can Use These Spaces
+					// Assign Points Based On Location On Board
+					else {
+						// Back Rows (5 points)
+						if(i == 0 || i == 7)
+							board[i][j] = new Square("black", i, j, 5, position);
+						// Outside Wall (1 point)
+						else if((j == 0 && i>0 && i<7) ||
+								(j == 7 && i>0 && i<7))
+							board[i][j] = new Square("black", i, j, 1, position);
+						// Second Squares (2 points)
+						else if((i == 1 && j>0 && j<7) ||
+								(i == 6 && j>0 && j<7) ||
+								(j == 1 && i>0 && i<7) ||
+								(j == 6 && i>0 && i<7))
+							board[i][j] = new Square("black", i, j, 2, position);
+						// Third Squares (3 points)
+						else if((i == 2 && j>1 && j<6) ||
+								(i == 5 && j>1 && j<6) ||
+								(j == 2 && i>1 && i<6) ||
+								(j == 5 && i>1 && i<6))
+							board[i][j] = new Square("black", i, j, 3, position);
+						// Center (4 points)
+						else
+							board[i][j] = new Square("black", i, j, 4, position);
+						
+						for(int p: rPos) {
+							if(p == position) {
+								board[i][j].placeChecker("red", -1);
+								this.redCount++;
+							}
+						}
+						for(int p: bPos) {
+							if(p == position) {
+								board[i][j].placeChecker("black", 1);
+								this.blackCount++;
+							}
+						}
+						
+						position++;
+					}
+				}
+			}
+		}
+	
+	
+	
+	
+	
+	
+	
 	//Return An Array Of All Possible Moves
 	public ArrayList<Move> findMoves(String c) {
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
@@ -71,6 +145,7 @@ public class Board {
 				// Find A Checker Matching The Turn Color c
 				if(board[i][j].isOccupied() && board[i][j].occupyingChecker.getColor() == c) {
 					//Set Start Square And Current Checker For Move
+					System.out.println("Checker found at " + i + "," + j);
 					Square start = board[i][j];
 					Checker current = board[i][j].getOccupyingChecker();
 					// Check If Checker Can Occupy Adjacent Square
@@ -86,11 +161,13 @@ public class Board {
 								if(possibleJump(start, s)) {
 									Square end = board[s.getRow()+(s.getRow()-start.getRow())][s.getColumn()+(s.getColumn()-start.getColumn())];
 									Move move = new Move(start, end, current, end.getValue()-start.getValue());
-									move.getJumpedSquares().add(s);
-									possibleMoves.add(move);
-								}
-								// Then Double Jump And So On
-								
+									JumpPath(start, current, move);
+									for(Square s2: move.getJumpedSquares()) {
+										System.out.println(s.getPosition());
+									}
+									
+									move.setEnd(move.getJumpedSquares().get(move.getJumpedSquares().size()-1));
+								}								
 						}
 					}
 				}
@@ -172,11 +249,59 @@ public class Board {
 		return bestMove;
 	}
 	
+	public void JumpPath(Square s, Checker c, Move m) {
+		if(c.isKing) {
+			ArrayList<Square> adj = AdjSquares(s);
+			for(Square a: adj) {
+				if(a.isOccupied) {
+					if(a.getRow() + (a.getRow() - s.getRow()) >= 0 &&
+					   a.getRow() + (a.getRow() - s.getRow()) <= 7 &&
+					   a.getColumn() + (a.getColumn() - s.getColumn()) >= 0 &&
+					   a.getColumn() + (a.getColumn() - s.getColumn()) <= 7) {
+						if(board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())].isOccupied() == false) {
+							Square landing = board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())];
+							m.addJumpedSquare(a);
+							m.addJumpedSquare(landing);
+							JumpPath(landing, c, m);
+						}
+					}
+				}
+			}
+		} else {
+			ArrayList<Square> adj = AdjSquares(s);
+			for(Square a: adj) {
+				if(a.isOccupied) {
+					if(a.getRow() - s.getRow() == c.getMoveDirection()) {
+						if(a.getRow() + (a.getRow() - s.getRow()) >= 0 &&
+						   a.getRow() + (a.getRow() - s.getRow()) <= 7 &&
+						   a.getColumn() + (a.getColumn() - s.getColumn()) >= 0 &&
+						   a.getColumn() + (a.getColumn() - s.getColumn()) <= 7) {
+							if(board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())].isOccupied() == false) {
+							   Square landing = board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())];
+						 	   m.addJumpedSquare(a);
+							   m.addJumpedSquare(landing);
+							   JumpPath(landing, c, m);
+							}
+						}
+					}	
+				}
+			}
+		}
+	}
+	
 	public void MakeMove(Move m) {
 		m.end.placeChecker(m.start.remove());
 		for(Square s: m.getJumpedSquares()) {
 			FixCounts(s.remove());
 		}
+		if(m.getChecker().getMoveDirection() == 1 &&
+		   m.getEnd().getRow() == 7) {
+			m.getChecker().setKing();
+		}
+		if(m.getChecker().getMoveDirection() == -1 &&
+				   m.getEnd().getRow() == 0) {
+					m.getChecker().setKing();
+				}
 	}
 	
 	public void FixCounts(Checker c) {
@@ -214,9 +339,9 @@ public class Board {
 	// Print Current Board Configuration
 	public void print() {
 		for(int i = 0; i < 8; i++) {
+			System.out.print("| ");
 			for(int j = 0; j < 8; j++) {
-				System.out.print("| ");
-				System.out.print(board[i][j].getValue());
+				System.out.print(board[i][j].getPosition());
 				if(board[i][j].isOccupied()) {
 					if(board[i][j].getOccupyingChecker().getColor() == "red")
 						if(board[i][j].getOccupyingChecker().isKing())
@@ -230,7 +355,7 @@ public class Board {
 							System.out.print("b");
 				} else
 					System.out.print(" ");
-				System.out.print(" |");
+				System.out.print("\t |");
 			}
 			System.out.println();
 		}
