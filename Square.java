@@ -6,12 +6,14 @@ public class Square {
 	public int row;
 	public int column;
 	public int value;
+	public int position;
 	
-	public Square(String c, int r, int col, int v) {
+	public Square(String c, int r, int col, int v, int p) {
 		this.color = c;
 		this.row = r;
 		this.column = col;
 		this.value = v;
+		this.position = p;
 	}
 	
 	public String getColor() { return this.color;}
@@ -34,5 +36,7 @@ public class Square {
 		return c;
 	}
 	public int getValue() {return this.value;}
+
+	public int getPosition() { return this.position; }
 
 }

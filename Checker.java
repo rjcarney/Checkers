@@ -13,4 +13,6 @@ public class Checker {
 	public int getMoveDirection() { return this.moveDirection; }
 
 	public boolean isKing() { return this.isKing; }
+
+	public void setKing() { this.isKing = true; }
 }

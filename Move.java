@@ -24,4 +24,6 @@ public class Move {
 	public void addJumpedSquare(Square s) {
 		this.jumpedSquares.add(s);
 	}
+
+	public void setEnd(Square e) { this.end = e; }
 }
