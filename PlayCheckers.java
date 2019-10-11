@@ -6,9 +6,9 @@ public class PlayCheckers {
 		// Get information from player needed to start game
 		Scanner keyIn = new Scanner(System.in);
 		System.out.print("Enter player color (red or black): ");
-		String playerColor = keyIn.next();
+		String playerColor = keyIn.nextLine();
 		System.out.print("Enter Starting color (red or black): ");
-		String currentColor = keyIn.next();
+		String currentColor = keyIn.nextLine();
 		
 		Board board = new Board();
 		
@@ -16,15 +16,22 @@ public class PlayCheckers {
 			// Print the board for the current turn
 			board.print();
 			
+			
 			// Find all the moves current player can make
-			ArrayList currentMoves = board.findMoves(currentColor);
+			ArrayList<Move> currentMoves = new ArrayList<Move>();
+			if(currentColor.equals("red")) {
+				currentMoves = board.findMoves("red");
+			} else {
+				currentMoves = board.findMoves("black");
+			}
+			
 			
 			// Print a list of all moves
-			for(Object m: currentMoves) {
+			for(Move m: currentMoves) {
 				System.out.println("Index: " + currentMoves.indexOf(m) +
-								   " Start: " + ((Move) m).getStart().getRow() + "," + ((Move) m).getStart().getColumn() +
-								   " End: " + ((Move) m).getEnd().getRow() + "," + ((Move) m).getEnd().getColumn() +
-								   " Point Change: " + ((Move) m).getValueChange());
+								   " Start: " + m.getStart().getPosition() +
+								   " End: " + m.getEnd().getPosition() + 
+								   " Point Change: " + m.getValueChange());
 			}
 			
 			if(currentColor.equals(playerColor)) {
@@ -34,11 +41,13 @@ public class PlayCheckers {
 				board.MakeMove((Move) currentMoves.get(index));
 			} else {
 				// AI turn to make move
-				board.MakeMove(board.BestMove(currentMoves));
+				Move bestMove = board.BestMove(currentMoves);
+				System.out.println("Computer Made Move: " + currentMoves.indexOf(bestMove));
+				board.MakeMove(bestMove);
 			}
 			
 			// Change current player
-			if (currentColor == "black") {
+			if (currentColor.equals("black")) {
 				currentColor = "red";
 			} else {
 				currentColor = "black";
