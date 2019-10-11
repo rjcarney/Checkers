@@ -12,7 +12,7 @@ public class PlayCheckers {
 		
 		Board board = new Board();
 		
-		while(board.getBlackCount() > 0 || board.getRedCount() > 0) {
+		while(board.getBlackCount() > 0 && board.getRedCount() > 0) {
 			// Print the board for the current turn
 			board.print();
 			
@@ -53,5 +53,10 @@ public class PlayCheckers {
 				currentColor = "black";
 			}
 		}
+		
+		if(board.getBlackCount() > 0)
+			System.out.println("Winner is black");
+		else
+			System.out.println("Winner is red");
 	}
 }

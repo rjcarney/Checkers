@@ -163,10 +163,12 @@ public class Board {
 									Move move = new Move(start, end, current, end.getValue()-start.getValue());
 									JumpPath(start, current, move);
 									for(Square s2: move.getJumpedSquares()) {
-										System.out.println(s.getPosition());
+										System.out.println(s2.getPosition());
 									}
 									
 									move.setEnd(move.getJumpedSquares().get(move.getJumpedSquares().size()-1));
+									System.out.println("Piece lands in " + move.getEnd().getPosition());
+									possibleMoves.add(move);
 								}								
 						}
 					}
@@ -179,10 +181,13 @@ public class Board {
 
 	private boolean possibleJump(Square start, Square s) {
 		boolean isPossible = false;
-		if(s.getRow() + (start.getRow()-s.getRow()) >= 0 &&
-		   s.getColumn() + (start.getColumn()-s.getColumn()) >= 0 &&
-		   board[s.getRow()+(s.getRow()-start.getRow())][s.getColumn()+(s.getColumn()-start.getColumn())].isOccupied() == false) {
-			isPossible = true;
+		if(s.getRow() + (s.getRow()-start.getRow()) >= 0 &&
+		   s.getRow() + (s.getRow()-start.getRow()) <= 7 &&
+		   s.getColumn() + (s.getColumn()-start.getColumn()) >= 0 &&
+		   s.getColumn() + (s.getColumn()-start.getColumn()) <= 7) {
+			if(board[s.getRow()+(s.getRow()-start.getRow())][s.getColumn()+(s.getColumn()-start.getColumn())].isOccupied() == false) {
+				isPossible = true;
+			}
 		}
 		return isPossible;
 	}
@@ -253,7 +258,7 @@ public class Board {
 		if(c.isKing) {
 			ArrayList<Square> adj = AdjSquares(s);
 			for(Square a: adj) {
-				if(a.isOccupied) {
+				if(a.isOccupied()) {
 					if(a.getRow() + (a.getRow() - s.getRow()) >= 0 &&
 					   a.getRow() + (a.getRow() - s.getRow()) <= 7 &&
 					   a.getColumn() + (a.getColumn() - s.getColumn()) >= 0 &&
@@ -270,7 +275,7 @@ public class Board {
 		} else {
 			ArrayList<Square> adj = AdjSquares(s);
 			for(Square a: adj) {
-				if(a.isOccupied) {
+				if(a.isOccupied()) {
 					if(a.getRow() - s.getRow() == c.getMoveDirection()) {
 						if(a.getRow() + (a.getRow() - s.getRow()) >= 0 &&
 						   a.getRow() + (a.getRow() - s.getRow()) <= 7 &&
@@ -291,9 +296,16 @@ public class Board {
 	
 	public void MakeMove(Move m) {
 		m.end.placeChecker(m.start.remove());
-		for(Square s: m.getJumpedSquares()) {
-			FixCounts(s.remove());
+		
+		for(int i = 0; i < m.getJumpedSquares().size(); i++) {
+			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("red"))
+				this.redCount--;
+			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("black"))
+				this.blackCount--;
+			m.getJumpedSquares().get(i).remove();
+			i++;
 		}
+		
 		if(m.getChecker().getMoveDirection() == 1 &&
 		   m.getEnd().getRow() == 7) {
 			m.getChecker().setKing();
@@ -345,14 +357,14 @@ public class Board {
 				if(board[i][j].isOccupied()) {
 					if(board[i][j].getOccupyingChecker().getColor() == "red")
 						if(board[i][j].getOccupyingChecker().isKing())
-							System.out.print("R");
+							System.out.print("(R)");
 						else
-							System.out.print("r");
+							System.out.print("(r)");
 					else
 						if(board[i][j].getOccupyingChecker().isKing())
-							System.out.print("B");
+							System.out.print("(B)");
 						else
-							System.out.print("b");
+							System.out.print("(b)");
 				} else
 					System.out.print(" ");
 				System.out.print("\t |");
