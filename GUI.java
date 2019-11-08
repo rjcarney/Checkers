@@ -1,19 +1,51 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GUI extends JFrame {
-	public GUI() {
+	private ArrayList<SquarePanel> panels;
+	Square[][] board;
+	
+	public GUI(Square[][] board) {
 		super();
+		this.board = board;
 		this.setSize(800, 800);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new GridLayout(8,8));
 		this.setVisible(true);
+		this.panels = new ArrayList<SquarePanel>();
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				SquarePanel pan = this.addSquare(board[i][j]);
+				panels.add(pan);
+				if(board[i][j].isOccupied()) {
+					pan.addChecker(board[i][j].getOccupyingChecker(), pan.getGraphics());
+				}
+			}
+		}
+		
+		this.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent componentEvent) {
+				for(int i = 0; i < 8; i++) {
+					for(int j = 0; j < 8; j++) {
+						if(board[i][j].isOccupied()) {
+							SquarePanel pan = panels.get((i*8)+j);
+							pan.addChecker(board[i][j].getOccupyingChecker(), pan.getGraphics());
+						}
+					}
+				}
+			}
+		});
 	}
 	
+	
+
 	public class SquarePanel extends JPanel {
 	
 		public Square square;
@@ -22,12 +54,12 @@ public class GUI extends JFrame {
 		public SquarePanel(Square s) {
 			super();
 			this.square = s;
-			this.setSize(100, 100);
+			this.setSize(50, 50);
 			
 			if(s.getColor().equals("black")) {
-				this.setBackground(Color.BLACK);
+				this.setBackground(Color.GRAY);
 			} else {
-				this.setBackground(Color.RED);
+				this.setBackground(Color.WHITE);
 			}
 			
 		}
@@ -35,17 +67,17 @@ public class GUI extends JFrame {
 		public void addChecker(Checker c, Graphics g) {
 			Color x;
 			if(c.getColor().equals("red"))
-				x = Color.WHITE;
+				x = Color.RED;
 			else
-				x = Color.YELLOW;
+				x = Color.BLACK;
 			
 			g.setColor(x);
-			g.fillOval(0, 0, 80, 80);
-			this.setVisible(true);
+			g.fillOval(0, 0, 40, 40);
 		}
 		
 		public void removeChecker(Graphics g) {
-			g.clearRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			g.setColor(Color.GRAY);
+			g.fillOval(0, 0, 40, 40);
 		}
 	}
 
@@ -53,5 +85,9 @@ public class GUI extends JFrame {
 		SquarePanel newSquare = new SquarePanel(square);
 		this.add(newSquare);
 		return newSquare;
+	}
+
+	public SquarePanel getPanel(int row, int column) {
+		return this.panels.get((row*8)+column);
 	}
 }

@@ -13,12 +13,10 @@ public class Board {
 	
 	// Construct Game Board
 	public Board() {
-		this.g = new GUI();
 		this.board = new Square[8][8];
 		this.redCount = 0;
 		this.blackCount = 0;
 		int position = 1;
-		GUI.SquarePanel pan;
 		//Place 
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
@@ -26,10 +24,8 @@ public class Board {
 				// Player Can Not Use, All Are Worth 0 Points
 				if(i%2 == 0 && j%2 == 0) {
 						board[i][j] = new Square("red", i, j, 0, 0);
-						g.addSquare(board[i][j]);
 				} else if (i%2 == 1 && j%2 == 1) {
 					board[i][j] = new Square("red", i, j, 0, 0);
-					pan = g.addSquare(board[i][j]);
 				}
 				
 				// Black Squares
@@ -39,13 +35,11 @@ public class Board {
 					// Back Rows (5 points)
 					if(i == 0 || i == 7) {
 						board[i][j] = new Square("black", i, j, 5, position);
-						pan = g.addSquare(board[i][j]);
 					}
 					// Outside Wall (1 point)
 					else if((j == 0 && i>0 && i<7) ||
 							(j == 7 && i>0 && i<7)) {
 						board[i][j] = new Square("black", i, j, 1, position);
-						pan = g.addSquare(board[i][j]);
 					}
 					// Second Squares (2 points)
 					else if((i == 1 && j>0 && j<7) ||
@@ -53,7 +47,6 @@ public class Board {
 							(j == 1 && i>0 && i<7) ||
 							(j == 6 && i>0 && i<7)) {
 						board[i][j] = new Square("black", i, j, 2, position);
-						pan = g.addSquare(board[i][j]);
 					}
 					// Third Squares (3 points)
 					else if((i == 2 && j>1 && j<6) ||
@@ -61,12 +54,10 @@ public class Board {
 							(j == 2 && i>1 && i<6) ||
 							(j == 5 && i>1 && i<6)) {
 						board[i][j] = new Square("black", i, j, 3, position);
-						pan = g.addSquare(board[i][j]);
 					}
 					// Center (4 points)
 					else {
 						board[i][j] = new Square("black", i, j, 4, position);
-						pan = g.addSquare(board[i][j]);
 					}
 					
 					position++;
@@ -75,17 +66,16 @@ public class Board {
 					if(i < 3) {
 						Checker c = board[i][j].placeChecker("black", 1);
 						this.blackCount++;
-						pan.addChecker(c, pan.getGraphics());
 					}
 					else if(i > 4) {
 						Checker c = board[i][j].placeChecker("red", -1);
 						this.redCount++;
-						pan.addChecker(c, pan.getGraphics());
 					}
 				}
 			
 			}
 		}
+		this.g = new GUI(board);
 	}
 
 	// Construct Game Board
@@ -332,10 +322,18 @@ public class Board {
 		m.end.placeChecker(m.start.remove());
 		
 		for(int i = 0; i < m.getJumpedSquares().size(); i++) {
-			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("red"))
+			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("red")) {
 				this.redCount--;
-			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("black"))
+				Square jumped = m.getJumpedSquares().get(i);
+				GUI.SquarePanel pan = this.g.getPanel(jumped.getRow(), jumped.getColumn());
+				pan.removeChecker(pan.getGraphics());
+			}
+			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("black")) {
 				this.blackCount--;
+				Square jumped = m.getJumpedSquares().get(i);
+				GUI.SquarePanel pan = this.g.getPanel(jumped.getRow(), jumped.getColumn());
+				pan.removeChecker(pan.getGraphics());
+			}
 			m.getJumpedSquares().get(i).remove();
 			i++;
 		}
@@ -348,6 +346,12 @@ public class Board {
 				   m.getEnd().getRow() == 0) {
 					m.getChecker().setKing();
 				}
+		
+		GUI.SquarePanel start = this.g.getPanel(m.getStart().getRow(), m.getStart().getColumn());
+		start.removeChecker(start.getGraphics());
+		
+		GUI.SquarePanel end = this.g.getPanel(m.getEnd().getRow(), m.getEnd().getColumn());
+		end.addChecker(m.getEnd().getOccupyingChecker(), end.getGraphics());
 	}
 	
 	public void FixCounts(Checker c) {
