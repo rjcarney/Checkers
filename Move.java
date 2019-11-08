@@ -15,6 +15,26 @@ public class Move {
 		this.jumpedSquares = new ArrayList<Square>();
 	}
 	
+	public Move(Move m, Square s) {
+		this.start = m.getStart();
+		this.end = m.getEnd();
+		this.checker = m.getChecker();
+		this.valueChange = m.getValueChange();
+		this.jumpedSquares = new ArrayList<Square>();
+		boolean matches = true;
+		for(Square x: m.getJumpedSquares()) {
+			if(matches = true) {
+				if(x == s) {
+					this.jumpedSquares.add(x);
+					matches = false;
+				} else {
+					this.jumpedSquares.add(x);
+				}
+			}
+		}
+		
+	}
+
 	public Square getStart() { return this.start; }
 	public Square getEnd() { return this.end; }
 	public Checker getChecker() { return this.checker; }

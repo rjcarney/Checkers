@@ -22,8 +22,9 @@ public class Square {
 	public boolean isOccupied() { return this.occupyingChecker != null;}
 	public Checker getOccupyingChecker() {return this.occupyingChecker;}
 	
-	public void placeChecker(String c, int d) {
+	public Checker placeChecker(String c, int d) {
 		this.occupyingChecker = new Checker(c, d);
+		return this.occupyingChecker;
 	}
 	
 	public void placeChecker(Checker c) {

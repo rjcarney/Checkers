@@ -30,8 +30,8 @@ public class PlayCheckers {
 			for(Move m: currentMoves) {
 				System.out.println("Index: " + currentMoves.indexOf(m) +
 								   " Start: " + m.getStart().getPosition() +
-								   " End: " + m.getEnd().getPosition() + 
-								   " Point Change: " + m.getValueChange());
+								   " End: " + m.getEnd().getPosition());
+								   //+ " Point Change: " + m.getValueChange());
 			}
 			
 			if(currentColor.equals(playerColor)) {
