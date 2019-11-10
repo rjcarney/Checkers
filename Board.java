@@ -320,8 +320,6 @@ public class Board {
 								//THEN: Landing Space is Available
 										Square landing = board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())];
 										Move newMove = new Move(m, a, landing);
-										newMove.addJumpedSquare(a);
-										newMove.addJumpedSquare(landing);
 										jumps.add(newMove);
 										JumpPaths(landing, c, newMove, jumps);
 								}
@@ -394,17 +392,22 @@ public class Board {
 	public void MakeMove(Move m) {
 		m.end.placeChecker(m.start.remove());
 		
-		for(int i = 0; i < m.getJumpedSquares().size(); i++) {
-			if(m.getJumpedSquares().get(i).getOccupyingChecker().getColor().equals("red")) {
-				this.redCount--;
-			} else {
-				this.blackCount--;
+		for(Square s: m.getJumpedSquares()) {
+			System.out.println(s.getPosition());
+		}
+		
+		for(Square s: m.getJumpedSquares()) {
+			if(m.getJumpedSquares().indexOf(s)%2 == 0) {
+				System.out.println("Checking Color of Checker at" + s.getPosition());
+				if(s.getOccupyingChecker().getColor().equals("red")) {
+					this.redCount--;
+				} else {
+					this.blackCount--;
+				}
+				GUI.SquarePanel pan = this.g.getPanel(s.getRow(), s.getColumn());
+				pan.removeChecker(pan.getGraphics());
+				s.remove();
 			}
-			Square jumped = m.getJumpedSquares().get(i);
-			GUI.SquarePanel pan = this.g.getPanel(jumped.getRow(), jumped.getColumn());
-			pan.removeChecker(pan.getGraphics());
-			m.getJumpedSquares().get(i).remove();
-			i++;
 		}
 		
 		if(m.getChecker().getMoveDirection() == 1 &&
@@ -412,9 +415,9 @@ public class Board {
 			m.getChecker().setKing();
 		}
 		if(m.getChecker().getMoveDirection() == -1 &&
-				   m.getEnd().getRow() == 0) {
-					m.getChecker().setKing();
-				}
+		   m.getEnd().getRow() == 0) {
+			m.getChecker().setKing();
+		}
 		
 		GUI.SquarePanel start = this.g.getPanel(m.getStart().getRow(), m.getStart().getColumn());
 		start.removeChecker(start.getGraphics());
