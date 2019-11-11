@@ -331,64 +331,6 @@ public class Board {
 		}
 	}
 	
-	
-	public void JumpPath(Square s, Checker c, Move m) {
-		if(c.isKing()) {
-		//THEN: Checker Can move in All Directions
-			// Find all Adjacent Squares
-			ArrayList<Square> adj = AdjSquares(s);
-			for(Square a: adj) {
-				if(a.isOccupied()) {
-					if(a.getOccupyingChecker().getColor().equals(c.getColor()) == false) {
-						//THEN: Square Is Occupied By An Opponent Checker
-						if(a.getRow() + (a.getRow() - s.getRow()) >= 0 &&
-						   a.getRow() + (a.getRow() - s.getRow()) <= 7 &&
-						   a.getColumn() + (a.getColumn() - s.getColumn()) >= 0 &&
-						   a.getColumn() + (a.getColumn() - s.getColumn()) <= 7) {
-							if(board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())].isOccupied() == false) {
-								// Landing Square Is On The Board And Empty
-								if(m.getJumpedSquares().size() == 0 ||
-								   s == m.getJumpedSquares().get(m.getJumpedSquares().size()-1)) { //This should change to find longest jump
-										Square landing = board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())];
-										m.addJumpedSquare(a);
-										m.addJumpedSquare(landing);
-										JumpPath(landing, c, m);
-								}
-							}
-						}
-					}
-					
-				}
-			}
-		} else {
-		//THEN: Checker is not a king and can only move in one direction
-			//Find All Adjacent Squares
-			ArrayList<Square> adj = AdjSquares(s);
-			for(Square a: adj) {
-				if(a.isOccupied()) {
-					if(a.getOccupyingChecker().getColor().equals(c.getColor()) == false) {
-					//THEN: Square Is Occupied By Opponent Checker
-						if(a.getRow() - s.getRow() == c.getMoveDirection()) {
-						//THEN: Checker Can Move in Direction of The Opponent Checker
-							if(a.getRow() + (a.getRow() - s.getRow()) >= 0 &&
-							   a.getRow() + (a.getRow() - s.getRow()) <= 7 &&
-							   a.getColumn() + (a.getColumn() - s.getColumn()) >= 0 &&
-							   a.getColumn() + (a.getColumn() - s.getColumn()) <= 7) {
-							//THEN: Square behind Checker is on the board
-								if(board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())].isOccupied() == false) {
-									Square landing = board[a.getRow() + (a.getRow() - s.getRow())][a.getColumn() + (a.getColumn() - s.getColumn())];
-									m.addJumpedSquare(a);
-									m.addJumpedSquare(landing);
-									JumpPath(landing, c, m);
-								}
-							}
-						}
-					}	
-				}
-			}
-		}
-	}
-	
 	public void MakeMove(Move m) {
 		m.end.placeChecker(m.start.remove());
 		

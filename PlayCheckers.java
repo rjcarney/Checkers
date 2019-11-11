@@ -32,6 +32,14 @@ public class PlayCheckers {
 								   " Start: " + m.getStart().getPosition() +
 								   " End: " + m.getEnd().getPosition());
 								   //+ " Point Change: " + m.getValueChange());
+				if(m.getJumpedSquares().size() > 0) {
+					for(Square s: m.getJumpedSquares()) {
+						if(m.getJumpedSquares().indexOf(s)%2 == 0)
+							System.out.println("Jumps " + s.getPosition());
+						else
+							System.out.println("Lands in " + s.getPosition());
+					}
+				}
 			}
 			
 			if(currentColor.equals(playerColor)) {
