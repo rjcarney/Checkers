@@ -5,7 +5,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		int[] rPos = {32};
-		int[] bPos = {27, 18};
+		int[] bPos = {27, 18, 19, 11};
 		Board board = new Board(rPos, bPos);
 		
 		board.print();

@@ -72,7 +72,10 @@ public class GUI extends JFrame {
 				x = Color.BLACK;
 			
 			g.setColor(x);
-			g.fillOval(0, 0, 40, 40);
+			if(c.isKing()) 
+				g.fillOval(0, 0, 55, 55);
+			else
+				g.fillOval(0, 0, 40, 40);
 		}
 		
 		public void removeChecker(Graphics g) {
