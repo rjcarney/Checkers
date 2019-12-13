@@ -10,6 +10,10 @@ public class PlayCheckers {
 		System.out.print("Enter Starting color (red or black): ");
 		String currentColor = keyIn.nextLine();
 		
+		//int[] rPos = {7, 27, 28, 29, 31, 32};
+		//int[] bPos = {1, 2, 4, 20, 22};
+		//Board board = new Board(rPos, bPos);
+		
 		Board board = new Board();
 		
 		while(board.getBlackCount() > 0 && board.getRedCount() > 0) {

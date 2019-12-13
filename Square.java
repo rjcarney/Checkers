@@ -27,6 +27,13 @@ public class Square {
 		return this.occupyingChecker;
 	}
 	
+	public Checker placeChecker(String c, int d, boolean isKing) {
+		this.occupyingChecker = new Checker(c, d);
+		if(isKing)
+			this.occupyingChecker.setKing();
+		return this.occupyingChecker;
+	}
+	
 	public void placeChecker(Checker c) {
 		this.occupyingChecker = c;
 	}
