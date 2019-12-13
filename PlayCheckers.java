@@ -53,7 +53,8 @@ public class PlayCheckers {
 				board.MakeMove((Move) currentMoves.get(index));
 			} else {
 				// AI turn to make move
-				Move bestMove = board.BestMove(currentMoves);
+				GameTree tree = new GameTree(board, currentColor);
+				Move bestMove = tree.MinMax();
 				System.out.println("Computer Made Move: " + currentMoves.indexOf(bestMove));
 				board.MakeMove(bestMove);
 			}
