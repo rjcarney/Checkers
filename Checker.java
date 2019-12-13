@@ -9,6 +9,13 @@ public class Checker {
 		this.moveDirection = d;
 	}
 
+	public Checker(Checker c) {
+		this.color = c.getColor();
+		this.moveDirection = c.getMoveDirection();
+		if(c.isKing())
+			this.setKing();
+	}
+
 	public String getColor() {return this.color;}
 	public int getMoveDirection() { return this.moveDirection; }
 

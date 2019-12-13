@@ -10,6 +10,10 @@ public class PlayCheckers {
 		System.out.print("Enter Starting color (red or black): ");
 		String currentColor = keyIn.nextLine();
 		
+		//int[] rPos = {7, 27, 28, 29, 31, 32};
+		//int[] bPos = {1, 2, 4, 20, 22};
+		//Board board = new Board(rPos, bPos);
+		
 		Board board = new Board();
 		
 		while(board.getBlackCount() > 0 && board.getRedCount() > 0) {
@@ -49,7 +53,8 @@ public class PlayCheckers {
 				board.MakeMove((Move) currentMoves.get(index));
 			} else {
 				// AI turn to make move
-				Move bestMove = board.BestMove(currentMoves);
+				GameTree tree = new GameTree(board, currentColor);
+				Move bestMove = tree.MinMax();
 				System.out.println("Computer Made Move: " + currentMoves.indexOf(bestMove));
 				board.MakeMove(bestMove);
 			}

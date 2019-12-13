@@ -80,7 +80,7 @@ public class GUI extends JFrame {
 		
 		public void removeChecker(Graphics g) {
 			g.setColor(Color.GRAY);
-			g.fillOval(0, 0, 40, 40);
+			g.fillOval(0, 0, 55, 55);
 		}
 	}
 
