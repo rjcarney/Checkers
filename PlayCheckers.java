@@ -10,9 +10,13 @@ public class PlayCheckers {
 		System.out.print("Enter Starting color (red or black): ");
 		String currentColor = keyIn.nextLine();
 		
+		//int[] rPos = {7, 27, 28, 29, 31, 32};
+		//int[] bPos = {1, 2, 4, 20, 22};
+		//Board board = new Board(rPos, bPos);
+		
 		Board board = new Board();
 		
-		while(board.getBlackCount() > 0 || board.getRedCount() > 0) {
+		while(board.getBlackCount() > 0 && board.getRedCount() > 0) {
 			// Print the board for the current turn
 			board.print();
 			
@@ -30,8 +34,16 @@ public class PlayCheckers {
 			for(Move m: currentMoves) {
 				System.out.println("Index: " + currentMoves.indexOf(m) +
 								   " Start: " + m.getStart().getPosition() +
-								   " End: " + m.getEnd().getPosition() + 
-								   " Point Change: " + m.getValueChange());
+								   " End: " + m.getEnd().getPosition());
+								   //+ " Point Change: " + m.getValueChange());
+				if(m.getJumpedSquares().size() > 0) {
+					for(Square s: m.getJumpedSquares()) {
+						if(m.getJumpedSquares().indexOf(s)%2 == 0)
+							System.out.println("Jumps " + s.getPosition());
+						else
+							System.out.println("Lands in " + s.getPosition());
+					}
+				}
 			}
 			
 			if(currentColor.equals(playerColor)) {
@@ -53,5 +65,10 @@ public class PlayCheckers {
 				currentColor = "black";
 			}
 		}
+		
+		if(board.getBlackCount() > 0)
+			System.out.println("Winner is black");
+		else
+			System.out.println("Winner is red");
 	}
 }
